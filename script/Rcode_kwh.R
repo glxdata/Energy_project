@@ -94,12 +94,12 @@ pm <- kwhmonth |>
   theme(legend.position = "top")
 
 
-# t-test to examine significance mean differences between time zones in hourly consumption
+# anova to examine significance mean differences between time zones in hourly consumption
 pth <- kwh |>
   ggbetweenstats(x = timezone,
                  y = kwh)
 
-# t-test to examine significance mean differences between time zones in monthly consumption
+# anova to examine significance mean differences between time zones in monthly consumption
 ptm <- kwhmonth |>
   ggbetweenstats(x = timezone,
                  y = sum)
