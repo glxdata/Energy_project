@@ -131,6 +131,18 @@ kwh |>
   theme_classic() +
   theme(legend.position = "bottom")
 
+# plot Mean Hourly Energy Consumption By Quarter Grouped By Timezone
+kwhQuart |>
+  ggplot(aes(x = quarter, y = meanKWh, color = timezone)) +
+  geom_point(size = 5) +
+  geom_text(aes(label = round(meanKWh,3),
+            hjust = 2)) +
+  scale_color_viridis_d(option = "D") +
+  ggtitle("Mean Hourly Energy Consumption By Quarter Grouped By Timezone") +
+  labs(x = "", y = "Energy Consumption (KWh)") +
+  facet_wrap(~timezone) +
+  theme_classic() +
+  theme(legend.position = "")
 
 
  
