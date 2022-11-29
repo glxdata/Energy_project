@@ -145,7 +145,5 @@ kwhQuart |>
   theme(legend.position = "")
 
 
- 
-
 
 
