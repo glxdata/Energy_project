@@ -42,22 +42,30 @@ kwh$dates <- as.Date(kwh$dates, origin = '1899-12-30')
 # create a month column as factor
 kwh$month <- as.factor(month(kwh$dates)) 
 # add hour column 'h' with values from 1 - 24
-# add column for night, evening and day time hours, as factor
+# add column for night, evening and day time hours, and quartals as factor
 kwh <- kwh |>
   mutate(h = rep(1:24,365))  |>
   mutate(timezone = as.factor(case_when(h >= 1 & h <= 5  ~ 'Night',
                               h >= 22 & h <= 24 ~ 'Night',
                               h >= 18 & h <= 21 ~ 'Evening', 
-                              h >= 6 & h <= 17 ~ 'Day')))
+                              h >= 6 & h <= 17 ~ 'Day'))) |>
+  mutate(quarter = as.factor(quarter(dates)))
 
 # create tibble with totals grouped by month and timezone
 kwhmonth <- kwh |>
   group_by(month, timezone)|>
   summarise(sum = sum(kwh, na.rm = TRUE))
 
+# create tibble with mean kwh, and median kwh grouped by quarter by timezone
+kwhQuart <- kwh |>
+  group_by(quarter, timezone)|>
+  summarise(meanKWh = mean(kwh, na.rm = TRUE),
+            medianKwh = median(kwh, na.rm = TRUE))
+
 # check data
 kwh
 kwhmonth
+kwhQuart
 
 ######################
 # END DATA WRANGLING #
@@ -93,7 +101,6 @@ pm <- kwhmonth |>
   theme_classic() +
   theme(legend.position = "top")
 
-
 # anova to examine significance mean differences between time zones in hourly consumption
 pth <- kwh |>
   ggbetweenstats(x = timezone,
@@ -111,4 +118,20 @@ ph # hour
 pth # anova hour
 ph / pth # combine plots horizontal
 pm / ptm  # combine plots horizontal
+
+# Hourly Energy Consumption By Quarter Grouped by Timezone
+kwh |>
+  ggplot(aes(x = quarter, y = kwh, color = quarter, fill = timezone)) +
+  geom_boxplot() +
+  stat_summary(fun ="mean") +
+  scale_color_viridis_d(option = "D") +
+  ggtitle("Hourly Energy Consumption By Quarter Grouped By Timezone") +
+  labs(x = "", y = "Energy Consumption (KWh)") +
+  facet_wrap(~timezone) +
+  theme_classic() +
+  theme(legend.position = "bottom")
+
+ 
+
+
 
