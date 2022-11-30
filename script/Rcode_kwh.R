@@ -7,6 +7,7 @@ library(rio)
 library(lubridate)
 library(ggstatsplot)
 library(patchwork)
+library(viridis)
 
 ################
 # IMPORT DATA #
@@ -119,7 +120,9 @@ pth # anova hour
 ph / pth # combine plots horizontal
 pm / ptm  # combine plots horizontal
 
-# Hourly Energy Consumption By Quarter Grouped by Timezone
+# Additional plots
+
+# Box plot Hourly Energy Consumption By Quarter Grouped by Timezone
 kwh |>
   ggplot(aes(x = quarter, y = kwh, color = quarter, fill = timezone)) +
   geom_boxplot() +
@@ -131,7 +134,7 @@ kwh |>
   theme_classic() +
   theme(legend.position = "bottom")
 
-# plot Mean Hourly Energy Consumption By Quarter Grouped By Timezone
+# Dot plot Mean Hourly Energy Consumption By Quarter Grouped By Timezone
 kwhQuart |>
   ggplot(aes(x = quarter, y = meanKWh, color = timezone)) +
   geom_point(size = 5) +
@@ -144,6 +147,54 @@ kwhQuart |>
   theme_classic() +
   theme(legend.position = "")
 
+# Box plot Hourly Energy Consumption For a Specific Day Grouped by Timezone
+kwh |> filter(dates == "2021-12-12") |>
+  ggplot(aes(x = timezone, y = kwh, fill = timezone, group = timezone)) +
+  geom_boxplot() +
+  stat_summary(fun ="mean") +
+  ggtitle("Hourly Energy Consumption 2021-12-12 Grouped by Timezone") +
+  labs(x = "", y = "Energy Consumption (KWh)") +
+  scale_color_viridis_d(option = "D") +
+  theme_classic() +
+  theme(legend.position = "") 
 
+#  Line plot Hourly Energy Consumption For a Specific Day
+kwh |> filter(dates == "2021-12-12") |>
+  ggplot(aes(x = h, y = kwh)) +
+  geom_point() +
+  geom_line() +
+  geom_text(aes(label = round(kwh, 1)),
+            vjust = 1, hjust = -0.5) +
+  scale_x_continuous(breaks = c(1:24)) +
+  ggtitle("Hourly Energy Consumption 2021-12-12") +
+  labs(x = "24-hours", y = "Energy Consumption (KWh)") +
+  scale_color_viridis_d(option = "D") +
+  theme_classic() +
+  theme(legend.position = "") 
 
+# Polar plot Hourly Energy Consumption For a Specific Day
+kwh |> filter(dates == "2021-12-12") |>
+  ggplot(aes(x = h, y = kwh, fill = timezone)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar() +
+  geom_text(aes(label = round(kwh, 2)),
+            vjust = 1, hjust = 0.7) +
+  scale_x_continuous(breaks = c(1:24)) +
+  ggtitle("Hourly Energy Consumption 2021-12-12") +
+  labs(x = "24-hours", y = "Energy Consumption (KWh)") +
+  #scale_fill_viridis_d() +
+  theme_classic() +
+  theme(legend.position = "bottom") 
 
+# Bar plot Hourly Energy Consumption For a Specific Day
+kwh |> filter(dates == "2021-12-12") |>
+  ggplot(aes(x = h, y = kwh, fill = timezone)) +
+  geom_bar(width = 1, stat = "identity", color = "white") +
+  geom_text(aes(label = round(kwh, 2)),
+            vjust = -2, hjust = 0) +
+  scale_x_continuous(breaks = c(1:24)) +
+  ggtitle("Hourly Energy Consumption 2021-12-12") +
+  labs(x = "24-hours", y = "Energy Consumption (KWh)") +
+  scale_fill_viridis_d(option = 'G') +
+  theme_classic() +
+  theme(legend.position = "bottom") 
