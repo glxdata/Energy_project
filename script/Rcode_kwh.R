@@ -175,15 +175,15 @@ kwh |> filter(dates == "2021-12-12") |>
 # Polar plot Hourly Energy Consumption For a Specific Day
 kwh |> filter(dates == "2021-12-12") |>
   ggplot(aes(x = h, y = kwh, fill = timezone)) +
-  geom_bar(width = 1, stat = "identity") +
+  geom_bar(width = 1, stat = "identity", color ="white") +
   coord_polar() +
   geom_text(aes(label = round(kwh, 2)),
             vjust = 1, hjust = 0.7) +
   scale_x_continuous(breaks = c(1:24)) +
   ggtitle("Hourly Energy Consumption 2021-12-12") +
   labs(x = "24-hours", y = "Energy Consumption (KWh)") +
-  #scale_fill_viridis_d() +
-  theme_classic() +
+  # scale_fill_viridis_d() +
+  theme_minimal() + #  choose theme_classic() for plot without grid lines
   theme(legend.position = "bottom") 
 
 # Bar plot Hourly Energy Consumption For a Specific Day
