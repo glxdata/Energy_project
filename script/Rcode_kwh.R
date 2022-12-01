@@ -8,6 +8,7 @@ library(lubridate)
 library(ggstatsplot)
 library(patchwork)
 library(viridis)
+library(ggridges)
 
 ################
 # IMPORT DATA #
@@ -196,5 +197,13 @@ kwh |> filter(dates == "2021-12-12") |>
   ggtitle("Hourly Energy Consumption 2021-12-12") +
   labs(x = "24-hours", y = "Energy Consumption (KWh)") +
   scale_fill_viridis_d(option = 'G') +
+  theme_classic() +
+  theme(legend.position = "bottom") 
+
+# Density ridge line plots
+ggplot(kwh, aes(x = kwh, y = month, fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "KWh", option = "H") +
+  labs(title = 'Distribution Hourly Energy Consumption Per Month') +
   theme_classic() +
   theme(legend.position = "bottom") 
